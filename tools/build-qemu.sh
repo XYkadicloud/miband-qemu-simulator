@@ -35,23 +35,18 @@ if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
   # band9 shares the band10pro overlay (same SoC family)
   PREP_MODEL="band10pro"
   [[ "$MODEL" == "band11" ]] && PREP_MODEL="band11"
-  python "$PROJECT_ROOT/tools/prepare_source.py" --model "$PREP_MODEL" --output "$(cygpath -m "$COMPILE_ROOT/qemu")"
+  python "$PROJECT_ROOT/tools/prepare_source.py" --model "$PREP_MODEL" --output "$COMPILE_ROOT/qemu"
 fi
 cd "$COMPILE_ROOT/build"
 if [[ ! -f build.ninja ]]; then
-  if [[ "$MODEL" == band11 ]]; then
-    "$COMPILE_ROOT/qemu/configure" --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --target-list=arm-softmmu --with-devices-arm=q66 \
-      --without-default-devices --without-default-features --enable-tcg --enable-sdl \
-      --enable-vnc --enable-pixman --disable-rust --disable-tools --disable-docs \
-      --disable-tests --disable-install-blobs --enable-hmp
-  else
+  # Use explicit cross-compiler for arm-softmmu target
+  CC="x86_64-w64-mingw32-gcc" CXX="x86_64-w64-mingw32-g++" \
     "$COMPILE_ROOT/qemu/configure" --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --target-list=arm-softmmu \
       --without-default-devices --disable-docs --disable-tools --disable-user \
       --disable-guest-agent --disable-slirp --enable-sdl --disable-gtk --disable-curses \
       --disable-opengl --disable-virglrenderer --disable-spice --disable-gnutls \
       --disable-capstone --disable-libnfs --disable-libiscsi --disable-rbd \
       --disable-xen --disable-kvm --disable-werror --disable-rust
-  fi
 fi
 if [[ "${CONFIGURE_ONLY:-0}" == 1 ]]; then
   printf 'Configured %s\n' "$COMPILE_ROOT/build"
