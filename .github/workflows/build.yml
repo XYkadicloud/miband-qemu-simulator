@@ -37,6 +37,8 @@ jobs:
 
       - name: Configure band10pro
         shell: bash
+        env:
+          MSYS2_PATH_TYPE: inherit
         run: |
           export TOOLCHAIN_ROOT="$MSYS2_PATH"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
@@ -44,6 +46,8 @@ jobs:
 
       - name: Build band10pro
         shell: bash
+        env:
+          MSYS2_PATH_TYPE: inherit
         run: |
           export TOOLCHAIN_ROOT="$MSYS2_PATH"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
@@ -86,6 +90,8 @@ jobs:
 
       - name: Configure band9
         shell: bash
+        env:
+          MSYS2_PATH_TYPE: inherit
         run: |
           export TOOLCHAIN_ROOT="$MSYS2_PATH"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
@@ -93,6 +99,8 @@ jobs:
 
       - name: Build band9
         shell: bash
+        env:
+          MSYS2_PATH_TYPE: inherit
         run: |
           export TOOLCHAIN_ROOT="$MSYS2_PATH"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
