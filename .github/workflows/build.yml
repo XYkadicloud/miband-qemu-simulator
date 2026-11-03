@@ -1,0 +1,107 @@
+name: Build QEMU
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-band10pro:
+    name: Build band10pro (Mi Band 10 Pro)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: true
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            base-devel
+            git
+            mingw-w64-ucrt-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-glib2
+            mingw-w64-ucrt-x86_64-pixman
+            mingw-w64-ucrt-x86_64-SDL2
+            mingw-w64-ucrt-x86_64-zlib
+            mingw-w64-ucrt-x86_64-zstd
+            mingw-w64-ucrt-x86_64-bzip2
+
+      - name: Configure band10pro
+        shell: bash
+        run: |
+          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
+          bash tools/build-qemu.sh band10pro
+
+      - name: Build band10pro
+        shell: bash
+        run: |
+          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
+          cd "$QEMU_BUILD_ROOT/build"
+          ninja -j"${{ runner.os == 'Windows' && '8' || '4' }}" qemu-system-arm.exe
+
+      - name: Upload band10pro artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-system-arm-band10pro
+          path: ${{ runner.temp }}/build/band10pro/build/qemu-system-arm.exe
+          retention-days: 7
+
+  build-band9:
+    name: Build band9 (Mi Band 9)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: true
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            base-devel
+            git
+            mingw-w64-ucrt-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-glib2
+            mingw-w64-ucrt-x86_64-pixman
+            mingw-w64-ucrt-x86_64-SDL2
+            mingw-w64-ucrt-x86_64-zlib
+            mingw-w64-ucrt-x86_64-zstd
+            mingw-w64-ucrt-x86_64-bzip2
+
+      - name: Configure band9
+        shell: bash
+        run: |
+          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
+          bash tools/build-qemu.sh band9
+
+      - name: Build band9
+        shell: bash
+        run: |
+          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
+          cd "$QEMU_BUILD_ROOT/build"
+          ninja -j"${{ runner.os == 'Windows' && '8' || '4' }}" qemu-system-arm.exe
+
+      - name: Upload band9 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-system-arm-band9
+          path: ${{ runner.temp }}/build/band9/build/qemu-system-arm.exe
+          retention-days: 7

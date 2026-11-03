@@ -1,5 +1,5 @@
 ﻿param(
-    [ValidateSet('all','band11','band10pro')][string]$Model='all',
+    [ValidateSet('all','band9','band11','band10pro')][string]$Model='all',
     [string]$Toolchain='C:\msys64',
     [string]$BuildRoot,
     [int]$Jobs=4,
@@ -23,7 +23,7 @@ $cygpath=Join-Path $Toolchain 'usr\bin\cygpath.exe'
 $script=& $cygpath -u (Join-Path $PSScriptRoot 'build-qemu.sh')
 $env:TOOLCHAIN_ROOT=& $cygpath -u $Toolchain
 $env:BUILD_JOBS=[string]$Jobs
-$selection=if($Model -eq 'all'){@('band11','band10pro')}else{@($Model)}
+$selection=if($Model -eq 'all'){@('band9','band11','band10pro')}else{@($Model)}
 foreach($id in $selection){
     $env:QEMU_BUILD_ROOT=& $cygpath -u (Join-Path $BuildRoot $id)
     & $bash $script $id

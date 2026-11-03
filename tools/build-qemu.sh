@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-MODEL=${1:?Usage: bash tools/build-qemu.sh band11|band10pro}
-case "$MODEL" in band11|band10pro) ;; *) exit 2 ;; esac
+MODEL=${1:?Usage: bash tools/build-qemu.sh band9|band11|band10pro}
+case "$MODEL" in band11|band10pro|band9) ;; *) exit 2 ;; esac
 PROJECT_ROOT=$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)
 TOOLCHAIN_ROOT=${TOOLCHAIN_ROOT:-/c/msys64}
 COMPILE_ROOT=${QEMU_BUILD_ROOT:-$PROJECT_ROOT/.build/$MODEL}
@@ -16,7 +16,9 @@ mkdir -p "$COMPILE_ROOT/build" "$COMPILE_ROOT/tmp"
 export TMPDIR="$COMPILE_ROOT/tmp"
 export TMP="$(cygpath -m "$TMPDIR")" TEMP="$(cygpath -m "$TMPDIR")"
 if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
-  python "$PROJECT_ROOT/tools/prepare_source.py" --model "$MODEL" --output "$(cygpath -m "$COMPILE_ROOT/qemu")"
+  # band9 shares the band10pro overlay (same SoC family)
+  PREP_MODEL="${MODEL#band}"
+  python "$PROJECT_ROOT/tools/prepare_source.py" --model "$PREP_MODEL" --output "$(cygpath -m "$COMPILE_ROOT/qemu")"
 fi
 cd "$COMPILE_ROOT/build"
 if [[ ! -f build.ninja ]]; then
