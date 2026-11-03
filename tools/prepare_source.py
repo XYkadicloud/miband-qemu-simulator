@@ -58,8 +58,10 @@ def prepare(model, output, verify=True):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(__doc__)
-    p.add_argument('--model', choices=('band11', 'band10pro'), required=True)
+    p.add_argument('--model', choices=('band9', 'band11', 'band10pro'), required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--no-verify', action='store_true', help='For reviewed local source edits')
     args = p.parse_args()
-    prepare(args.model, args.output, not args.no_verify)
+    # band9 shares the band10pro overlay
+    prepare_model = 'band10pro' if args.model == 'band9' else args.model
+    prepare(prepare_model, args.output, not args.no_verify)
