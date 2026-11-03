@@ -3,7 +3,19 @@ set -euo pipefail
 MODEL=${1:?Usage: bash tools/build-qemu.sh band9|band11|band10pro}
 case "$MODEL" in band11|band10pro|band9) ;; *) exit 2 ;; esac
 PROJECT_ROOT=$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)
-TOOLCHAIN_ROOT=${TOOLCHAIN_ROOT:-/c/msys64}
+# Resolve MSYS2 toolchain root
+if [[ -z "${TOOLCHAIN_ROOT:-}" ]]; then
+  # Try common locations
+  if [[ -d "/c/msys64" ]]; then
+    TOOLCHAIN_ROOT="/c/msys64"
+  elif [[ -d "/usr" ]]; then
+    TOOLCHAIN_ROOT="/usr"
+  else
+    echo "ERROR: Cannot find MSYS2 installation" >&2
+    exit 1
+  fi
+fi
+export TOOLCHAIN_ROOT
 COMPILE_ROOT=${QEMU_BUILD_ROOT:-$PROJECT_ROOT/.build/$MODEL}
 export PATH="$TOOLCHAIN_ROOT/ucrt64/bin:$TOOLCHAIN_ROOT/usr/bin:$PATH"
 # MinGW tools can emit the Windows ACP even under a UTF-8 Python locale.
