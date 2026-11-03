@@ -24,5 +24,18 @@
     "runner": "run_p67.py",
     "bluetooth_runner": "run_p67.py",
     "rotation": true
+  },
+  "band9": {
+    "name": "小米手环 9",
+    "board": "n66",
+    "pid": 17575,
+    "firmware": "3.1.32",
+    "display": [
+      192,
+      490
+    ],
+    "runner": "run_n66.py",
+    "bluetooth_runner": "run_n66.py",
+    "rotation": true
   }
 }

@@ -1,0 +1,11 @@
+# Xiaomi Mi Band 9 (n66) demo factory identity
+ro.factory.board_id=1
+persist.boardid=1
+ro.factory.model=miwear.watch.n66cn
+ro.factory.pid=17575
+ro.factory.fsn=DEMO9CN00001
+ro.factory.mac_bt=02:00:00:09:00:01
+ro.factory.did=1000000009
+ro.factory.psn=00000/DEMO9CN00001
+ro.factory.key=0000000000000000
+ro.factory.sku=BHR09HCN
