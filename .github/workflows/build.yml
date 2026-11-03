@@ -37,19 +37,15 @@ jobs:
 
       - name: Configure band10pro
         shell: bash
-        env:
-          MSYS2_PATH_TYPE: inherit
         run: |
-          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
           bash tools/build-qemu.sh band10pro
 
       - name: Build band10pro
         shell: bash
-        env:
-          MSYS2_PATH_TYPE: inherit
         run: |
-          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
           cd "$QEMU_BUILD_ROOT/build"
           ninja -j"${{ runner.os == 'Windows' && '8' || '4' }}" qemu-system-arm.exe
@@ -90,19 +86,15 @@ jobs:
 
       - name: Configure band9
         shell: bash
-        env:
-          MSYS2_PATH_TYPE: inherit
         run: |
-          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
           bash tools/build-qemu.sh band9
 
       - name: Build band9
         shell: bash
-        env:
-          MSYS2_PATH_TYPE: inherit
         run: |
-          export TOOLCHAIN_ROOT="$MSYS2_PATH"
+          export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
           cd "$QEMU_BUILD_ROOT/build"
           ninja -j"${{ runner.os == 'Windows' && '8' || '4' }}" qemu-system-arm.exe
