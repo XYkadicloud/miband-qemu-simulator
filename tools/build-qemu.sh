@@ -21,16 +21,15 @@ export PATH="$TOOLCHAIN_ROOT/ucrt64/bin:$TOOLCHAIN_ROOT/usr/bin:$PATH"
 # MinGW tools can emit the Windows ACP even under a UTF-8 Python locale.
 # Meson's legacy decoder tolerates these compiler diagnostics.
 export PYTHONUTF8=0 PYTHONIOENCODING=utf-8 LC_ALL=C LANG=C
-for dep in gcc g++ python ninja pkg-config; do
+# Use UCRT64 mingw gcc for cross-compilation (available in UCRT64 env)
+export CC="${CC:-x86_64-w64-mingw32-gcc}"
+export CXX="${CXX:-x86_64-w64-mingw32-g++}"
+for dep in "$CC" "$CXX" python ninja pkg-config; do
   command -v "$dep" >/dev/null || { printf 'Missing build dependency: %s\n' "$dep" >&2; exit 1; }
 done
-# Ensure mingw64 gcc is in PATH (needed for cross-compilation)
-if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
-  export PATH="$TOOLCHAIN_ROOT/ucrt64/bin:$PATH"
-fi
 mkdir -p "$COMPILE_ROOT/build" "$COMPILE_ROOT/tmp"
 export TMPDIR="$COMPILE_ROOT/tmp"
-export TMP="$(cygpath -m "$TMPDIR")" TEMP="$(cygpath -m "$TMPDIR")"
+export TMP="${COMPILE_ROOT/tmp}" TEMP="${COMPILE_ROOT/tmp}"
 if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
   # band9 shares the band10pro overlay (same SoC family)
   PREP_MODEL="band10pro"
@@ -39,9 +38,7 @@ if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
 fi
 cd "$COMPILE_ROOT/build"
 if [[ ! -f build.ninja ]]; then
-  # Use explicit cross-compiler for arm-softmmu target
-  CC="x86_64-w64-mingw32-gcc" CXX="x86_64-w64-mingw32-g++" \
-    "$COMPILE_ROOT/qemu/configure" --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --target-list=arm-softmmu \
+  "$COMPILE_ROOT/qemu/configure" --cc="$CC" --cxx="$CXX" --target-list=arm-softmmu \
       --without-default-devices --disable-docs --disable-tools --disable-user \
       --disable-guest-agent --disable-slirp --enable-sdl --disable-gtk --disable-curses \
       --disable-opengl --disable-virglrenderer --disable-spice --disable-gnutls \
