@@ -36,14 +36,14 @@ jobs:
             mingw-w64-ucrt-x86_64-bzip2
 
       - name: Configure band10pro
-        shell: bash
+        shell: msys2 {0}
         run: |
           export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
           bash tools/build-qemu.sh band10pro
 
       - name: Build band10pro
-        shell: bash
+        shell: msys2 {0}
         run: |
           export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band10pro"
@@ -85,14 +85,14 @@ jobs:
             mingw-w64-ucrt-x86_64-bzip2
 
       - name: Configure band9
-        shell: bash
+        shell: msys2 {0}
         run: |
           export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
           bash tools/build-qemu.sh band9
 
       - name: Build band9
-        shell: bash
+        shell: msys2 {0}
         run: |
           export TOOLCHAIN_ROOT="/c/msys64"
           export QEMU_BUILD_ROOT="${{ runner.temp }}/build/band9"
