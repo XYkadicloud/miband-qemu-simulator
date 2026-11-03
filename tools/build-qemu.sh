@@ -3,33 +3,15 @@ set -euo pipefail
 MODEL=${1:?Usage: bash tools/build-qemu.sh band9|band11|band10pro}
 case "$MODEL" in band11|band10pro|band9) ;; *) exit 2 ;; esac
 PROJECT_ROOT=$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)
-# Resolve MSYS2 toolchain root
-if [[ -z "${TOOLCHAIN_ROOT:-}" ]]; then
-  # Try common locations
-  if [[ -d "/c/msys64" ]]; then
-    TOOLCHAIN_ROOT="/c/msys64"
-  elif [[ -d "/usr" ]]; then
-    TOOLCHAIN_ROOT="/usr"
-  else
-    echo "ERROR: Cannot find MSYS2 installation" >&2
-    exit 1
-  fi
-fi
-export TOOLCHAIN_ROOT
 COMPILE_ROOT=${QEMU_BUILD_ROOT:-$PROJECT_ROOT/.build/$MODEL}
-export PATH="$TOOLCHAIN_ROOT/ucrt64/bin:$TOOLCHAIN_ROOT/usr/bin:$PATH"
 # MinGW tools can emit the Windows ACP even under a UTF-8 Python locale.
 # Meson's legacy decoder tolerates these compiler diagnostics.
 export PYTHONUTF8=0 PYTHONIOENCODING=utf-8 LC_ALL=C LANG=C
-# Use UCRT64 mingw gcc for cross-compilation (available in UCRT64 env)
-export CC="${CC:-x86_64-w64-mingw32-gcc}"
-export CXX="${CXX:-x86_64-w64-mingw32-g++}"
-for dep in "$CC" "$CXX" python ninja pkg-config; do
+for dep in gcc g++ python ninja pkg-config; do
   command -v "$dep" >/dev/null || { printf 'Missing build dependency: %s\n' "$dep" >&2; exit 1; }
 done
 mkdir -p "$COMPILE_ROOT/build" "$COMPILE_ROOT/tmp"
 export TMPDIR="$COMPILE_ROOT/tmp"
-export TMP="${COMPILE_ROOT/tmp}" TEMP="${COMPILE_ROOT/tmp}"
 if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
   # band9 shares the band10pro overlay (same SoC family)
   PREP_MODEL="band10pro"
@@ -38,7 +20,7 @@ if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
 fi
 cd "$COMPILE_ROOT/build"
 if [[ ! -f build.ninja ]]; then
-  "$COMPILE_ROOT/qemu/configure" --cc="$CC" --cxx="$CXX" --target-list=arm-softmmu \
+  "$COMPILE_ROOT/qemu/configure" --cc=gcc --cxx=g++ --target-list=arm-softmmu \
       --without-default-devices --disable-docs --disable-tools --disable-user \
       --disable-guest-agent --disable-slirp --enable-sdl --disable-gtk --disable-curses \
       --disable-opengl --disable-virglrenderer --disable-spice --disable-gnutls \
