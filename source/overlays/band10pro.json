@@ -1929,7 +1929,7 @@
     "hw/arm/mcimx7d-sabre.c": "04e9842a5eefc02a79bb23a983e2c8ba65c19dfb6c3c337a15bbcf47407d3d56",
     "hw/arm/memsc_best1700.c": "e5552bfe61b3a7af8f1e19253f7365cfee807946cdf508748d8b18f9a32588f2",
     "hw/arm/meson.build": "03f2b0a3c9307441389f513de94fe5577bef9c6a050ecf141ec9b7ee31684f67",
-    "hw/arm/miband.c": "d905c422efff3b30cb149ebbe582e6f2ab88f758f262cac8d12c3700f4660e49",
+    "hw/arm/miband.c": "5e7ea70e0f70661db1c3ae816920c4975452f823f0d921afae35c2f58856752b",
     "hw/arm/miband_aoncmu.c": "366e19cda939d67f2e561766a8eb767e3c9090fea4947dd0d481f1f759e6b8a9",
     "hw/arm/miband_audio.c": "04f13b392667d5a30acba79387a18ac083b9f99b2fc73364b83e2f7018a02869",
     "hw/arm/miband_audio.h": "d10ef1f7231b4d5fc377c712cc242de66bb89163c4b40051c8908f04ef52cc96",

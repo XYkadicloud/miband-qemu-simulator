@@ -780,6 +780,9 @@ static void miband_init(MachineState *machine)
     armv7m = DEVICE(&s->armv7m);
     qdev_prop_set_uint32(armv7m, "num-irq", 128);
     qdev_prop_set_string(armv7m, "cpu-type", machine->cpu_type);
+    /* Enable VFP and DSP extensions for band9 firmware compatibility */
+    object_property_set_bool(armv7m, "vfp", true, &error_fatal);
+    object_property_set_bool(armv7m, "dsp", true, &error_fatal);
     qdev_connect_clock_in(armv7m, "cpuclk", s->sysclk);
     qdev_connect_clock_in(armv7m, "refclk", s->refclk);
     object_property_set_link(OBJECT(&s->armv7m), "memory",
