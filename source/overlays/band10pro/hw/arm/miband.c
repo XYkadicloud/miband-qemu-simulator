@@ -785,6 +785,15 @@ static void miband_init(MachineState *machine)
     object_property_set_link(OBJECT(&s->armv7m), "memory",
                              OBJECT(sysmem), &error_fatal);
     sysbus_realize(SYS_BUS_DEVICE(&s->armv7m), &error_fatal);
+
+    /* Enable VFP for all security states and privilege levels.
+     * CPACR bits [19:20] control CP10/CP11 access.
+     * Setting to 0b11 (3) enables full VFP access in Secure and Non-Secure states.
+     */
+    ARMCPU *cpu = ARM_CPU(first_cpu);
+    cpu->env.v7m.cpacr[0] = 0xf00000; /* Non-secure: full VFP access */
+    cpu->env.v7m.cpacr[1] = 0xf00000; /* Secure: full VFP access */
+
     /* The AP firmware uses interrupt-driven UART RX.  Wire the PL011 RX
      * interrupt to the BES1503 UART lines; TX remains available through the
      * chardev even when RX is idle. */
