@@ -17,7 +17,8 @@ export TMPDIR="$COMPILE_ROOT/tmp"
 export TMP="$(cygpath -m "$TMPDIR")" TEMP="$(cygpath -m "$TMPDIR")"
 if [[ ! -d "$COMPILE_ROOT/qemu" ]]; then
   # band9 shares the band10pro overlay (same SoC family)
-  PREP_MODEL="${MODEL#band}"
+  PREP_MODEL="band10pro"
+  [[ "$MODEL" == "band11" ]] && PREP_MODEL="band11"
   python "$PROJECT_ROOT/tools/prepare_source.py" --model "$PREP_MODEL" --output "$(cygpath -m "$COMPILE_ROOT/qemu")"
 fi
 cd "$COMPILE_ROOT/build"
