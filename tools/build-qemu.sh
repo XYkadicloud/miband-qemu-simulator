@@ -24,6 +24,10 @@ export PYTHONUTF8=0 PYTHONIOENCODING=utf-8 LC_ALL=C LANG=C
 for dep in gcc g++ python ninja pkg-config; do
   command -v "$dep" >/dev/null || { printf 'Missing build dependency: %s\n' "$dep" >&2; exit 1; }
 done
+# Ensure mingw64 gcc is in PATH (needed for cross-compilation)
+if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
+  export PATH="$TOOLCHAIN_ROOT/ucrt64/bin:$PATH"
+fi
 mkdir -p "$COMPILE_ROOT/build" "$COMPILE_ROOT/tmp"
 export TMPDIR="$COMPILE_ROOT/tmp"
 export TMP="$(cygpath -m "$TMPDIR")" TEMP="$(cygpath -m "$TMPDIR")"
@@ -36,12 +40,12 @@ fi
 cd "$COMPILE_ROOT/build"
 if [[ ! -f build.ninja ]]; then
   if [[ "$MODEL" == band11 ]]; then
-    "$COMPILE_ROOT/qemu/configure" --cc=gcc --cxx=g++ --target-list=arm-softmmu --with-devices-arm=q66 \
+    "$COMPILE_ROOT/qemu/configure" --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --target-list=arm-softmmu --with-devices-arm=q66 \
       --without-default-devices --without-default-features --enable-tcg --enable-sdl \
       --enable-vnc --enable-pixman --disable-rust --disable-tools --disable-docs \
       --disable-tests --disable-install-blobs --enable-hmp
   else
-    "$COMPILE_ROOT/qemu/configure" --cc=gcc --cxx=g++ --target-list=arm-softmmu \
+    "$COMPILE_ROOT/qemu/configure" --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --target-list=arm-softmmu \
       --without-default-devices --disable-docs --disable-tools --disable-user \
       --disable-guest-agent --disable-slirp --enable-sdl --disable-gtk --disable-curses \
       --disable-opengl --disable-virglrenderer --disable-spice --disable-gnutls \
